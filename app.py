@@ -375,8 +375,7 @@ with st.sidebar:
         marked-up draft goes back to the Drafter — up to two rounds.
         """
     )
-    st.divider()
-    st.caption("Set GROQ_API_KEY in your .env file before running (free key: console.groq.com/keys).")
+    
 
 topic = st.text_input(
     "Topic for the desk to research",
