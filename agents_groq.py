@@ -1,20 +1,4 @@
-"""
-Multi-agent Research -> Draft -> Critic pipeline.
 
-Uses Groq (free tier, no credit card) instead of Gemini/Anthropic.
-Get a free key at: https://console.groq.com/keys
-
-Since Groq doesn't have a built-in web search tool, the Researcher agent
-uses the free `ddgs` (DuckDuckGo Search) library to fetch results, then
-asks Groq to synthesize them into clean research notes. No second API key
-needed for search.
-
-Design:
-- Each agent is a plain function calling the Groq API with a specific
-  system prompt. No framework, no magic.
-- State is passed explicitly between functions, easy to debug and explain
-  in a demo/Q&A.
-"""
 
 import os
 from pathlib import Path
@@ -83,9 +67,6 @@ def _web_search(query: str, max_results: int = 6) -> str:
     return "\n".join(formatted)
 
 
-# ---------------------------------------------------------------------
-# Agent 1: Researcher
-# ---------------------------------------------------------------------
 RESEARCHER_SYSTEM = """You are a Research Agent. You will be given raw web
 search results on a topic. Your job is to turn them into a clean, factual
 briefing document: bullet points, key facts, numbers, and source names.
@@ -105,16 +86,6 @@ def run_researcher(topic: str, on_chunk: Optional[Callable[[str], None]] = None)
     return notes
 
 
-# ---------------------------------------------------------------------
-# Agent 2: Drafter
-# ---------------------------------------------------------------------
-DRAFTER_SYSTEM = """You are a Drafting Agent. You take research notes and
-turn them into a clear, well-structured report for a general audience.
-Use short paragraphs and headers where useful. Do not invent facts beyond
-what's in the research notes. If the notes are thin on a point, say so
-briefly rather than fabricating detail. Aim for under 500 words unless the
-topic clearly needs more."""
-
 
 def run_drafter(topic: str, research_notes: str, prior_critique: str = "",
                  on_chunk: Optional[Callable[[str], None]] = None) -> str:
@@ -127,16 +98,6 @@ def run_drafter(topic: str, research_notes: str, prior_critique: str = "",
     return draft
 
 
-# ---------------------------------------------------------------------
-# Agent 3: Critic
-# ---------------------------------------------------------------------
-CRITIC_SYSTEM = """You are a Critic Agent. Review the draft report against
-the research notes for accuracy, clarity, and completeness. Be specific
-and constructive. If the draft is genuinely solid, say APPROVED as the
-first word of your response and briefly say why. If it needs work, say
-REVISE as the first word, then give 2-4 concrete, actionable points the
-Drafting Agent should fix. Keep it under 200 words."""
-
 
 def run_critic(topic: str, research_notes: str, draft: str,
                 on_chunk: Optional[Callable[[str], None]] = None) -> str:
@@ -148,10 +109,6 @@ def run_critic(topic: str, research_notes: str, draft: str,
         on_chunk(critique)
     return critique
 
-
-# ---------------------------------------------------------------------
-# Pipeline orchestration
-# ---------------------------------------------------------------------
 def run_pipeline(topic: str, callbacks: dict = None) -> PipelineState:
     callbacks = callbacks or {}
     state = PipelineState(topic=topic)
