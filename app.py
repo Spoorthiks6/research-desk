@@ -1,18 +1,3 @@
-"""
-Streamlit UI for the Research -> Draft -> Critic multi-agent pipeline.
-
-Visual concept: a lab notebook / editorial desk. The Researcher's notes
-look like typewritten field notes, the Drafter's output is a manuscript
-page, and the Critic's feedback appears as literal red-pen marginalia.
-An approved report gets a rotated ink-stamp treatment.
-
-Includes a Day/Night toggle - both modes are driven by the same CSS
-variables, so any element using var(--ink) etc. stays correct in either
-mode automatically.
-
-Run with: streamlit run app.py
-"""
-
 import streamlit as st
 from agents_groq import run_pipeline
 
@@ -42,9 +27,7 @@ else:
     stamp = "#8BC3A9"
     surface_text = "#F3F1E7"
 
-# ---------------------------------------------------------------------
-# Design tokens + global styling
-# ---------------------------------------------------------------------
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&family=Caveat:wght@500;700&display=swap');
@@ -362,9 +345,7 @@ h1, h2, h3, h4, h5, h6 {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------------------------------------------------------------
-# Header
-# ---------------------------------------------------------------------
+
 title_col, menu_col = st.columns([12, 1])
 
 with title_col:
